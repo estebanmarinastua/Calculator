@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="A modern, responsive calculator built with HTML, CSS and JavaScript."
+    >
+
+    <title>Calculator</title>
+
+    <style>
+        /* =========================================
+           CSS VARIABLES
+        ========================================== */
+
+        :root {
+            --background: #0f172a;
+            --calculator: #1e293b;
+            --display: #0b1120;
+
+            --number: #334155;
+            --number-hover: #475569;
+
+            --operator: #2563eb;
+            --operator-hover: #3b82f6;
+
+            --danger: #dc2626;
+            --danger-hover: #ef4444;
+
+            --equals: #16a34a;
+            --equals-hover: #22c55e;
+
+            --text: #f8fafc;
+            --muted: #94a3b8;
+
+            --shadow:
+                0 25px 50px rgba(0, 0, 0, 0.35);
+
+            --radius: 24px;
+        }
+
+
+        /* =========================================
+           RESET
+        ========================================== */
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        /* =========================================
+           BODY
+        ========================================== */
+
+        body {
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            font-family:
+                Inter,
+                ui-sans-serif,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            color: var(--text);
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    #1d4ed8 0%,
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at bottom right,
+                    #7c3aed 0%,
+                    transparent 35%
+                ),
+                var(--background);
+        }
+
+
+        /* =========================================
+           CALCULATOR
+        ========================================== */
+
+        .calculator {
+            width: min(100%, 380px);
+
+            padding: 20px;
+
+            background: rgba(30, 41, 59, 0.88);
+
+            border: 1px solid rgba(255, 255, 255, 0.08);
+
+            border-radius: var(--radius);
+
+            box-shadow: var(--shadow);
+
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+
+        /* =========================================
+           HEADER
+        ========================================== */
+
+        .calculator__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 16px;
+        }
+
+        .calculator__title {
+            font-size: 15px;
+            font-weight: 600;
+
+            color: var(--muted);
+
+            letter-spacing: 1px;
+        }
+
+        .calculator__indicator {
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #22c55e;
+
+            box-shadow:
+                0 0 10px rgba(34, 197, 94, 0.8);
+        }
+
+
+        /* =========================================
+           DISPLAY
+        ========================================== */
+
+        .display {
+            width: 100%;
+            min-height: 120px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: flex-end;
+
+            gap: 8px;
+
+            padding: 20px;
+
+            margin-bottom: 18px;
+
+            overflow: hidden;
+
+            background: var(--display);
+
+            border: 1px solid rgba(255, 255, 255, 0.06);
+
+            border-radius: 18px;
+        }
+
+        .display__expression {
+            width: 100%;
+
+            overflow: hidden;
+
+            text-align: right;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            font-size: 15px;
+
+            color: var(--muted);
+        }
+
+        .display__value {
+            width: 100%;
+
+            overflow: hidden;
+
+            text-align: right;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            font-size: clamp(32px, 10vw, 46px);
+            font-weight: 700;
+            line-height: 1;
+
+            color: var(--text);
+        }
+
+
+        /* =========================================
+           BUTTON GRID
+        ========================================== */
+
+        .buttons {
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 10px;
+        }
+
+
+        /* =========================================
+           BUTTONS
+        ========================================== */
+
+        button {
+            min-height: 68px;
+
+            border: 0;
+            border-radius: 16px;
+
+            font: inherit;
+            font-size: 21px;
+            font-weight: 600;
+
+            color: var(--text);
+
+            background: var(--number);
+
+            cursor: pointer;
+
+            user-select: none;
+
+            transition:
+                transform 0.12s ease,
+                background-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            background: var(--number-hover);
+        }
+
+        button:active {
+            transform: scale(0.94);
+        }
+
+        button:focus-visible {
+            outline: 3px solid rgba(96, 165, 250, 0.8);
+            outline-offset: 3px;
+        }
+
+
+        /* =========================================
+           OPERATOR BUTTONS
+        ========================================== */
+
+        .operator {
+            background: var(--operator);
+        }
+
+        .operator:hover {
+            background: var(--operator-hover);
+        }
+
+
+        /* =========================================
+           CLEAR BUTTON
+        ========================================== */
+
+        .clear {
+            background: var(--danger);
+        }
+
+        .clear:hover {
+            background: var(--danger-hover);
+        }
+
+
+        /* =========================================
+           EQUALS BUTTON
+        ========================================== */
+
+        .equals {
+            background: var(--equals);
+        }
+
+        .equals:hover {
+            background: var(--equals-hover);
+        }
+
+
+        /* =========================================
+           ZERO BUTTON
+        ========================================== */
+
+        .zero {
+            grid-column: span 2;
+        }
+
+
+        /* =========================================
+           FOOTER
+        ========================================== */
+
+        .calculator__footer {
+            margin-top: 16px;
+
+            text-align: center;
+
+            font-size: 12px;
+
+            color: var(--muted);
+        }
+
+
+        /* =========================================
+           RESPONSIVE DESIGN
+        ========================================== */
+
+        @media (max-width: 400px) {
+
+            body {
+                padding: 12px;
+            }
+
+            .calculator {
+                padding: 14px;
+                border-radius: 20px;
+            }
+
+            button {
+                min-height: 62px;
+                border-radius: 14px;
+            }
+
+            .display {
+                min-height: 110px;
+            }
+        }
+
+
+        /* =========================================
+           REDUCED MOTION
+        ========================================== */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                transition: none !important;
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main
+        class="calculator"
+        aria-label="Calculator"
+    >
+
+        <!-- HEADER -->
+
+        <header class="calculator__header">
+
+            <span class="calculator__title">
+                CALCULATOR
+            </span>
+
+            <span
+                class="calculator__indicator"
+                aria-hidden="true"
+            ></span>
+
+        </header>
+
+
+        <!-- DISPLAY -->
+
+        <section
+            class="display"
+            aria-live="polite"
+            aria-atomic="true"
+        >
+
+            <div
+                class="display__expression"
+                id="expression"
+            ></div>
+
+            <div
+                class="display__value"
+                id="display"
+            >
+                0
+            </div>
+
+        </section>
+
+
+        <!-- BUTTONS -->
+
+        <section
+            class="buttons"
+            aria-label="Calculator buttons"
+        >
+
+            <!-- ROW 1 -->
+
+            <button
+                type="button"
+                class="clear"
+                data-action="clear"
+                aria-label="Clear calculator"
+            >
+                AC
+            </button>
+
+            <button
+                type="button"
+                data-action="delete"
+                aria-label="Delete last character"
+            >
+                ⌫
+            </button>
+
+            <button
+                type="button"
+                data-action="percent"
+                aria-label="Percentage"
+            >
+                %
+            </button>
+
+            <button
+                type="button"
+                class="operator"
+                data-operator="/"
+                aria-label="Divide"
+            >
+                ÷
+            </button>
+
+
+            <!-- ROW 2 -->
+
+            <button
+                type="button"
+                data-number="7"
+            >
+                7
+            </button>
+
+            <button
+                type="button"
+                data-number="8"
+            >
+                8
+            </button>
+
+            <button
+                type="button"
+                data-number="9"
+            >
+                9
+            </button>
+
+            <button
+                type="button"
+                class="operator"
+                data-operator="*"
+                aria-label="Multiply"
+            >
+                ×
+            </button>
+
+
+            <!-- ROW 3 -->
+
+            <button
+                type="button"
+                data-number="4"
+            >
+                4
+            </button>
+
+            <button
+                type="button"
+                data-number="5"
+            >
+                5
+            </button>
+
+            <button
+                type="button"
+                data-number="6"
+            >
+                6
+            </button>
+
+            <button
+                type="button"
+                class="operator"
+                data-operator="-"
+                aria-label="Subtract"
+            >
+                −
+            </button>
+
+
+            <!-- ROW 4 -->
+
+            <button
+                type="button"
+                data-number="1"
+            >
+                1
+            </button>
+
+            <button
+                type="button"
+                data-number="2"
+            >
+                2
+            </button>
+
+            <button
+                type="button"
+                data-number="3"
+            >
+                3
+            </button>
+
+            <button
+                type="button"
+                class="operator"
+                data-operator="+"
+                aria-label="Add"
+            >
+                +
+            </button>
+
+
+            <!-- ROW 5 -->
+
+            <button
+                type="button"
+                class="zero"
+                data-number="0"
+            >
+                0
+            </button>
+
+            <button
+                type="button"
+                data-action="decimal"
+                aria-label="Decimal point"
+            >
+                .
+            </button>
+
+            <button
+                type="button"
+                class="equals"
+                data-action="calculate"
+                aria-label="Calculate result"
+            >
+                =
+            </button>
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer class="calculator__footer">
+            Use your keyboard for faster calculations
+        </footer>
+
+    </main>
+
+
+    <script>
+        "use strict";
+
+
+        // =========================================
+        // DOM ELEMENTS
+        // =========================================
+
+        const display =
+            document.getElementById("display");
+
+        const expression =
+            document.getElementById("expression");
+
+        const buttons =
+            document.querySelector(".buttons");
+
+
+        // =========================================
+        // CALCULATOR STATE
+        // =========================================
+
+        let currentValue = "0";
+
+        let previousValue = null;
+
+        let operator = null;
+
+        let waitingForOperand = false;
+
+
+        // =========================================
+        // UPDATE DISPLAY
+        // =========================================
+
+        function updateDisplay() {
+
+            display.textContent =
+                formatNumber(currentValue);
+
+            if (
+                previousValue !== null &&
+                operator
+            ) {
+
+                expression.textContent =
+                    `${formatNumber(previousValue)} ${getOperatorSymbol(operator)}`;
+
+            } else {
+
+                expression.textContent = "";
+            }
+        }
+
+
+        // =========================================
+        // FORMAT NUMBERS
+        // =========================================
+
+        function formatNumber(value) {
+
+            if (value === "Error") {
+                return value;
+            }
+
+            const number = Number(value);
+
+            if (!Number.isFinite(number)) {
+                return "Error";
+            }
+
+            return new Intl.NumberFormat("en-US", {
+                maximumFractionDigits: 10
+            }).format(number);
+        }
+
+
+        // =========================================
+        // OPERATOR SYMBOLS
+        // =========================================
+
+        function getOperatorSymbol(operator) {
+
+            const symbols = {
+                "+": "+",
+                "-": "−",
+                "*": "×",
+                "/": "÷"
+            };
+
+            return symbols[operator] || operator;
+        }
+
+
+        // =========================================
+        // INPUT NUMBER
+        // =========================================
+
+        function inputNumber(number) {
+
+            if (currentValue === "Error") {
+                reset();
+            }
+
+            if (waitingForOperand) {
+
+                currentValue = number;
+
+                waitingForOperand = false;
+
+            } else if (currentValue === "0") {
+
+                currentValue = number;
+
+            } else {
+
+                currentValue += number;
+            }
+
+            updateDisplay();
+        }
+
+
+        // =========================================
+        // INPUT DECIMAL
+        // =========================================
+
+        function inputDecimal() {
+
+            if (currentValue === "Error") {
+                reset();
+            }
+
+            if (waitingForOperand) {
+
+                currentValue = "0.";
+
+                waitingForOperand = false;
+
+                updateDisplay();
+
+                return;
+            }
+
+            if (!currentValue.includes(".")) {
+                currentValue += ".";
+            }
+
+            updateDisplay();
+        }
+
+
+        // =========================================
+        // SELECT OPERATOR
+        // =========================================
+
+        function chooseOperator(nextOperator) {
+
+            const inputValue =
+                Number(currentValue);
+
+            if (!Number.isFinite(inputValue)) {
+                return;
+            }
+
+            if (
+                operator &&
+                waitingForOperand
+            ) {
+
+                operator = nextOperator;
+
+                updateDisplay();
+
+                return;
+            }
+
+            if (previousValue === null) {
+
+                previousValue = inputValue;
+
+            } else if (operator) {
+
+                const result =
+                    calculate(
+                        previousValue,
+                        inputValue,
+                        operator
+                    );
+
+                if (result === null) {
+
+                    showError();
+
+                    return;
+                }
+
+                currentValue = String(result);
+
+                previousValue = result;
+            }
+
+            operator = nextOperator;
+
+            waitingForOperand = true;
+
+            updateDisplay();
+        }
+
+
+        // =========================================
+        // CALCULATE OPERATION
+        // =========================================
+
+        function calculate(
+            first,
+            second,
+            operator
+        ) {
+
+            switch (operator) {
+
+                case "+":
+                    return first + second;
+
+                case "-":
+                    return first - second;
+
+                case "*":
+                    return first * second;
+
+                case "/":
+
+                    if (second === 0) {
+                        return null;
+                    }
+
+                    return first / second;
+
+                default:
+                    return second;
+            }
+        }
+
+
+        // =========================================
+        // CALCULATE FINAL RESULT
+        // =========================================
+
+        function calculateResult() {
+
+            if (
+                operator === null ||
+                previousValue === null ||
+                waitingForOperand
+            ) {
+                return;
+            }
+
+            const secondValue =
+                Number(currentValue);
+
+            const result =
+                calculate(
+                    previousValue,
+                    secondValue,
+                    operator
+                );
+
+            if (result === null) {
+
+                showError();
+
+                return;
+            }
+
+            expression.textContent =
+                `${formatNumber(previousValue)} ` +
+                `${getOperatorSymbol(operator)} ` +
+                `${formatNumber(currentValue)} =`;
+
+            currentValue =
+                String(
+                    Number(
+                        result.toPrecision(12)
+                    )
+                );
+
+            previousValue = null;
+
+            operator = null;
+
+            waitingForOperand = true;
+
+            display.textContent =
+                formatNumber(currentValue);
+        }
+
+
+        // =========================================
+        // PERCENTAGE
+        // =========================================
+
+        function calculatePercentage() {
+
+            const value =
+                Number(currentValue);
+
+            if (!Number.isFinite(value)) {
+                return;
+            }
+
+            currentValue =
+                String(value / 100);
+
+            updateDisplay();
+        }
+
+
+        // =========================================
+        // DELETE LAST CHARACTER
+        // =========================================
+
+        function deleteLast() {
+
+            if (currentValue === "Error") {
+
+                reset();
+
+                return;
+            }
+
+            if (waitingForOperand) {
+                return;
+            }
+
+            if (
+                currentValue.length === 1 ||
+                (
+                    currentValue.length === 2 &&
+                    currentValue.startsWith("-")
+                )
+            ) {
+
+                currentValue = "0";
+
+            } else {
+
+                currentValue =
+                    currentValue.slice(0, -1);
+            }
+
+            updateDisplay();
+        }
+
+
+        // =========================================
+        // RESET CALCULATOR
+        // =========================================
+
+        function reset() {
+
+            currentValue = "0";
+
+            previousValue = null;
+
+            operator = null;
+
+            waitingForOperand = false;
+
+            updateDisplay();
+        }
+
+
+        // =========================================
+        // SHOW ERROR
+        // =========================================
+
+        function showError() {
+
+            currentValue = "Error";
+
+            previousValue = null;
+
+            operator = null;
+
+            waitingForOperand = true;
+
+            display.textContent = "Error";
+
+            expression.textContent =
+                "Invalid operation";
+        }
+
+
+        // =========================================
+        // BUTTON CLICK HANDLER
+        // =========================================
+
+        buttons.addEventListener(
+            "click",
+            (event) => {
+
+                const button =
+                    event.target.closest("button");
+
+                if (!button) {
+                    return;
+                }
+
+
+                // Number
+
+                if (
+                    button.dataset.number !== undefined
+                ) {
+
+                    inputNumber(
+                        button.dataset.number
+                    );
+
+                    return;
+                }
+
+
+                // Operator
+
+                if (button.dataset.operator) {
+
+                    chooseOperator(
+                        button.dataset.operator
+                    );
+
+                    return;
+                }
+
+
+                // Actions
+
+                switch (button.dataset.action) {
+
+                    case "clear":
+
+                        reset();
+
+                        break;
+
+                    case "delete":
+
+                        deleteLast();
+
+                        break;
+
+                    case "decimal":
+
+                        inputDecimal();
+
+                        break;
+
+                    case "percent":
+
+                        calculatePercentage();
+
+                        break;
+
+                    case "calculate":
+
+                        calculateResult();
+
+                        break;
+                }
+            }
+        );
+
+
+        // =========================================
+        // KEYBOARD SUPPORT
+        // =========================================
+
+        document.addEventListener(
+            "keydown",
+            (event) => {
+
+                const key = event.key;
+
+
+                // Numbers
+
+                if (/^\d$/.test(key)) {
+
+                    inputNumber(key);
+
+                    return;
+                }
+
+
+                // Decimal point
+
+                if (
+                    key === "." ||
+                    key === ","
+                ) {
+
+                    inputDecimal();
+
+                    return;
+                }
+
+
+                // Operators
+
+                if (
+                    ["+", "-", "*", "/"]
+                        .includes(key)
+                ) {
+
+                    chooseOperator(key);
+
+                    return;
+                }
+
+
+                // Enter / Equals
+
+                if (
+                    key === "Enter" ||
+                    key === "="
+                ) {
+
+                    event.preventDefault();
+
+                    calculateResult();
+
+                    return;
+                }
+
+
+                // Escape
+
+                if (key === "Escape") {
+
+                    reset();
+
+                    return;
+                }
+
+
+                // Backspace
+
+                if (key === "Backspace") {
+
+                    deleteLast();
+
+                    return;
+                }
+
+
+                // Percentage
+
+                if (key === "%") {
+
+                    calculatePercentage();
+                }
+            }
+        );
+
+
+        // =========================================
+        // INITIALIZE CALCULATOR
+        // =========================================
+
+        updateDisplay();
+
+    </script>
+
+</body>
+</html>
