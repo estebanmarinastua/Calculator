@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Modern calculator app built with HTML, CSS, and JavaScript."
+    />
+    <title>Calculator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="calculator" aria-label="Calculator app">
+      <header class="calculator__header">
+        <span class="calculator__title">CALCULATOR</span>
+        <span class="calculator__indicator" aria-hidden="true"></span>
+      </header>
+
+      <section class="display" aria-live="polite" aria-atomic="true">
+        <div id="expression" class="display__expression" aria-live="polite"></div>
+        <div id="display" class="display__value" aria-live="polite">0</div>
+      </section>
+
+      <section class="buttons" aria-label="Calculator buttons">
+        <button type="button" class="clear" data-action="clear" aria-label="Clear">AC</button>
+        <button type="button" data-action="delete" aria-label="Delete last input">⌫</button>
+        <button type="button" data-action="percent" aria-label="Percentage">%</button>
+        <button type="button" class="operator" data-operator="/" aria-label="Divide">÷</button>
+
+        <button type="button" data-number="7">7</button>
+        <button type="button" data-number="8">8</button>
+        <button type="button" data-number="9">9</button>
+        <button type="button" class="operator" data-operator="*" aria-label="Multiply">×</button>
+
+        <button type="button" data-number="4">4</button>
+        <button type="button" data-number="5">5</button>
+        <button type="button" data-number="6">6</button>
+        <button type="button" class="operator" data-operator="-" aria-label="Subtract">−</button>
+
+        <button type="button" data-number="1">1</button>
+        <button type="button" data-number="2">2</button>
+        <button type="button" data-number="3">3</button>
+        <button type="button" class="operator" data-operator="+" aria-label="Add">+</button>
+
+        <button type="button" class="zero" data-number="0">0</button>
+        <button type="button" data-action="decimal" aria-label="Decimal point">.</button>
+        <button type="button" class="equals" data-action="calculate" aria-label="Calculate result">=</button>
+      </section>
+
+      <footer class="calculator__footer">Use your keyboard for faster calculations</footer>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
